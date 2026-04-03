@@ -127,6 +127,6 @@ STATIC_URL = 'static/'
 
 AUTH_USER_MODEL = 'tutoring.User'
 
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'login_success_redirect'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'

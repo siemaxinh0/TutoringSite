@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head><title>Strefa Ucznia</title></head>
+<body>
+<h1>Strefa Ucznia</h1>
+<p>Witaj, {{ user.get_full_name|default:user.username }}! Twoje saldo lekcji: {{ user.lesson_balance }}</p>
+<a href="{% url 'logout' %}">Wyloguj się</a>
+</body>
+</html>

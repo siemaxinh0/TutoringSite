@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head><title>Strefa Nauczyciela</title></head>
+<body>
+<h1>Strefa Nauczyciela</h1>
+<p>Witaj, {{ user.get_full_name|default:user.username }}!</p>
+<a href="{% url 'logout' %}">Wyloguj się</a>
+</body>
+</html>

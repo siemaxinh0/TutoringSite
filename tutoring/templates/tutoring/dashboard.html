@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head><title>Dashboard</title></head>
+<body>
+<h1>Witaj na platformie, {{ user.get_full_name|default:user.username }}!</h1>
+<p>Twoje saldo lekcji: {{ user.lesson_balance }}</p>
+<a href="{% url 'logout' %}">Wyloguj się</a>
+</body>
+</html>

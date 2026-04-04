@@ -4,6 +4,20 @@
 <body>
 <h1>Strefa Nauczyciela</h1>
 <p>Witaj, {{ user.get_full_name|default:user.username }}!</p>
+
+<h2>Moje godziny</h2>
+{% if availabilities %}
+<ul>
+    {% for a in availabilities %}
+    <li>{{ a.get_day_of_week_display }} {{ a.start_time }} - {{ a.end_time }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Brak dostępności.</p>
+{% endif %}
+
+<a href="{% url 'add_availability' %}">Dodaj nową dostępność</a>
+<br><br>
 <a href="{% url 'logout' %}">Wyloguj się</a>
 </body>
 </html>

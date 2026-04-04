@@ -28,15 +28,27 @@ class User(AbstractUser):
 
 
 class Availability(models.Model):
+    DAYS_OF_WEEK = [
+        (0, 'Poniedziałek'),
+        (1, 'Wtorek'),
+        (2, 'Środa'),
+        (3, 'Czwartek'),
+        (4, 'Piątek'),
+        (5, 'Sobota'),
+        (6, 'Niedziela'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='availabilities')
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    day_of_week = models.IntegerField(choices=DAYS_OF_WEEK)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
 
     class Meta:
         verbose_name_plural = 'availabilities'
+        ordering = ['day_of_week', 'start_time']
 
     def __str__(self):
-        return f"{self.user} : {self.start_time} - {self.end_time}"
+        return f"{self.user} : {self.get_day_of_week_display()} {self.start_time} - {self.end_time}"
 
 
 class Lesson(models.Model):

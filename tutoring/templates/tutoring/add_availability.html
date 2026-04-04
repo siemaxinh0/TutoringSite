@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Dodaj dostępność</title></head>
+<body>
+<h1>Dodaj nową dostępność</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Zapisz</button>
+</form>
+<p><a href="{% url 'teacher_dashboard' %}">Powrót</a></p>
+</body>
+</html>

@@ -2,7 +2,8 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import redirect, render
 
-from .forms import CustomUserCreationForm
+from .forms import AvailabilityForm, CustomUserCreationForm
+from .models import Availability
 
 
 def register(request):
@@ -43,7 +44,23 @@ def is_student(user):
 @login_required
 @user_passes_test(is_teacher, login_url='dashboard')
 def teacher_dashboard(request):
-    return render(request, 'tutoring/teacher_dashboard.html')
+    availabilities = Availability.objects.filter(user=request.user)
+    return render(request, 'tutoring/teacher_dashboard.html', {'availabilities': availabilities})
+
+
+@login_required
+@user_passes_test(is_teacher, login_url='dashboard')
+def add_availability(request):
+    if request.method == 'POST':
+        form = AvailabilityForm(request.POST)
+        if form.is_valid():
+            availability = form.save(commit=False)
+            availability.user = request.user
+            availability.save()
+            return redirect('teacher_dashboard')
+    else:
+        form = AvailabilityForm()
+    return render(request, 'tutoring/add_availability.html', {'form': form})
 
 
 @login_required

@@ -10,5 +10,6 @@ urlpatterns = [
     path('redirect/', views.login_success_redirect, name='login_success_redirect'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('teacher/', views.teacher_dashboard, name='teacher_dashboard'),
+    path('teacher/add-availability/', views.add_availability, name='add_availability'),
     path('student/', views.student_dashboard, name='student_dashboard'),
 ]

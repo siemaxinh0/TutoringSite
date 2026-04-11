@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AvailabilityForm, CustomUserCreationForm
-from .models import Availability
+from .models import Availability, Role
 
 
 def register(request):
@@ -11,6 +11,8 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            student_role, _ = Role.objects.get_or_create(role_name='Uczeń')
+            user.roles.add(student_role)
             login(request, user)
             return redirect('login_success_redirect')
     else:

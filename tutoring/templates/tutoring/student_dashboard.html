@@ -4,6 +4,20 @@
 <body>
 <h1>Strefa Ucznia</h1>
 <p>Witaj, {{ user.get_full_name|default:user.username }}! Twoje saldo lekcji: {{ user.lesson_balance }}</p>
+
+<h2>Moje preferowane godziny lekcji</h2>
+{% if availabilities %}
+<ul>
+    {% for a in availabilities %}
+    <li>{{ a.get_day_of_week_display }} {{ a.start_time }} - {{ a.end_time }} <a href="{% url 'delete_availability' a.id %}">[Usuń]</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Brak preferowanych godzin.</p>
+{% endif %}
+
+<a href="{% url 'student_add_availability' %}">Dodaj preferowane godziny lekcji</a>
+<br><br>
 <a href="{% url 'logout' %}">Wyloguj się</a>
 </body>
 </html>

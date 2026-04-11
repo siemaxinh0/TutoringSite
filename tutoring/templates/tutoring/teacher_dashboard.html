@@ -9,7 +9,7 @@
 {% if availabilities %}
 <ul>
     {% for a in availabilities %}
-    <li>{{ a.get_day_of_week_display }} {{ a.start_time }} - {{ a.end_time }}</li>
+    <li>{{ a.get_day_of_week_display }} {{ a.start_time }} - {{ a.end_time }} <a href="{% url 'delete_availability' a.id %}">[Usuń]</a></li>
     {% endfor %}
 </ul>
 {% else %}

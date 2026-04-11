@@ -1,6 +1,6 @@
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AvailabilityForm, CustomUserCreationForm
 from .models import Availability
@@ -66,4 +66,32 @@ def add_availability(request):
 @login_required
 @user_passes_test(is_student, login_url='dashboard')
 def student_dashboard(request):
-    return render(request, 'tutoring/student_dashboard.html')
+    availabilities = Availability.objects.filter(user=request.user)
+    return render(request, 'tutoring/student_dashboard.html', {'availabilities': availabilities})
+
+
+@login_required
+@user_passes_test(is_student, login_url='dashboard')
+def student_add_availability(request):
+    if request.method == 'POST':
+        form = AvailabilityForm(request.POST)
+        if form.is_valid():
+            availability = form.save(commit=False)
+            availability.user = request.user
+            availability.save()
+            return redirect('student_dashboard')
+    else:
+        form = AvailabilityForm()
+    return render(request, 'tutoring/student_add_availability.html', {'form': form})
+
+
+@login_required
+def delete_availability(request, availability_id):
+    availability = get_object_or_404(Availability, id=availability_id, user=request.user)
+    availability.delete()
+    user_roles = request.user.roles.values_list('role_name', flat=True)
+    if 'Nauczyciel' in user_roles:
+        return redirect('teacher_dashboard')
+    if 'Uczeń' in user_roles:
+        return redirect('student_dashboard')
+    return redirect('dashboard')

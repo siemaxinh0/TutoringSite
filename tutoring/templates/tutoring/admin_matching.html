@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head><title>Panel dopasowań</title></head>
+<body>
+<h1>Panel dopasowań Uczeń-Nauczyciel</h1>
+
+{% if matching_results %}
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Uczeń</th>
+        <th>Przedmiot</th>
+        <th>Potrzeba (h/tyg.)</th>
+        <th>Dostępni nauczyciele</th>
+    </tr>
+    {% for item in matching_results %}
+    <tr>
+        <td>{{ item.requirement.student.get_full_name|default:item.requirement.student.username }}</td>
+        <td>{{ item.requirement.subject }}</td>
+        <td>{{ item.requirement.hours_per_week }}</td>
+        <td>
+            {% if item.matches %}
+            <ul>
+                {% for m in item.matches %}
+                <li>{{ m.teacher.get_full_name|default:m.teacher.username }} (wspólne terminy: {{ m.common_slots }})</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            Brak pasujących nauczycieli
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Brak zapotrzebowań do dopasowania.</p>
+{% endif %}
+
+<br>
+<a href="{% url 'dashboard' %}">Powrót</a>
+</body>
+</html>

@@ -13,5 +13,7 @@ urlpatterns = [
     path('teacher/add-availability/', views.add_availability, name='add_availability'),
     path('student/', views.student_dashboard, name='student_dashboard'),
     path('student/add-availability/', views.student_add_availability, name='student_add_availability'),
+    path('student/add-requirement/', views.add_student_requirement, name='add_student_requirement'),
     path('availability/delete/<int:availability_id>/', views.delete_availability, name='delete_availability'),
+    path('matching-panel/', views.admin_matching_panel, name='admin_matching_panel'),
 ]

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Dodaj zapotrzebowanie</title></head>
+<body>
+<h1>Dodaj zapotrzebowanie</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Zapisz</button>
+</form>
+<p><a href="{% url 'student_dashboard' %}">Powrót</a></p>
+</body>
+</html>

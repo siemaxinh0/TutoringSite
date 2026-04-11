@@ -2,8 +2,8 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import AvailabilityForm, CustomUserCreationForm
-from .models import Availability, Role
+from .forms import AvailabilityForm, CustomUserCreationForm, StudentRequirementForm
+from .models import Availability, Role, StudentRequirement, User
 
 
 def register(request):
@@ -69,7 +69,26 @@ def add_availability(request):
 @user_passes_test(is_student, login_url='dashboard')
 def student_dashboard(request):
     availabilities = Availability.objects.filter(user=request.user)
-    return render(request, 'tutoring/student_dashboard.html', {'availabilities': availabilities})
+    requirements = StudentRequirement.objects.filter(student=request.user)
+    return render(request, 'tutoring/student_dashboard.html', {
+        'availabilities': availabilities,
+        'requirements': requirements,
+    })
+
+
+@login_required
+@user_passes_test(is_student, login_url='dashboard')
+def add_student_requirement(request):
+    if request.method == 'POST':
+        form = StudentRequirementForm(request.POST)
+        if form.is_valid():
+            requirement = form.save(commit=False)
+            requirement.student = request.user
+            requirement.save()
+            return redirect('student_dashboard')
+    else:
+        form = StudentRequirementForm()
+    return render(request, 'tutoring/add_student_requirement.html', {'form': form})
 
 
 @login_required
@@ -97,3 +116,35 @@ def delete_availability(request, availability_id):
     if 'Uczeń' in user_roles:
         return redirect('student_dashboard')
     return redirect('dashboard')
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser, login_url='dashboard')
+def admin_matching_panel(request):
+    requirements = StudentRequirement.objects.select_related('student', 'subject').all()
+    matching_results = []
+
+    for req in requirements:
+        student_avails = Availability.objects.filter(user=req.student)
+        teachers = User.objects.filter(subjects=req.subject, roles__role_name='Nauczyciel').distinct()
+        teacher_matches = []
+
+        for teacher in teachers:
+            teacher_avails = Availability.objects.filter(user=teacher)
+            common_slots = 0
+            for sa in student_avails:
+                for ta in teacher_avails:
+                    if sa.day_of_week == ta.day_of_week:
+                        overlap_start = max(sa.start_time, ta.start_time)
+                        overlap_end = min(sa.end_time, ta.end_time)
+                        if overlap_start < overlap_end:
+                            common_slots += 1
+            if common_slots >= req.hours_per_week:
+                teacher_matches.append({'teacher': teacher, 'common_slots': common_slots})
+
+        matching_results.append({
+            'requirement': req,
+            'matches': teacher_matches,
+        })
+
+    return render(request, 'tutoring/admin_matching.html', {'matching_results': matching_results})

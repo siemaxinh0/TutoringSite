@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import Availability, User
+from .models import Availability, StudentRequirement, User
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -18,3 +18,9 @@ class AvailabilityForm(forms.ModelForm):
             'start_time': forms.TimeInput(attrs={'type': 'time'}),
             'end_time': forms.TimeInput(attrs={'type': 'time'}),
         }
+
+
+class StudentRequirementForm(forms.ModelForm):
+    class Meta:
+        model = StudentRequirement
+        fields = ('subject', 'hours_per_week')

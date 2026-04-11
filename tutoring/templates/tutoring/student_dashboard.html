@@ -5,6 +5,18 @@
 <h1>Strefa Ucznia</h1>
 <p>Witaj, {{ user.get_full_name|default:user.username }}! Twoje saldo lekcji: {{ user.lesson_balance }}</p>
 
+<h2>Moje zapotrzebowanie</h2>
+{% if requirements %}
+<ul>
+    {% for r in requirements %}
+    <li>{{ r.subject }} - {{ r.hours_per_week }}h/tydzień</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Brak zapotrzebowania.</p>
+{% endif %}
+<a href="{% url 'add_student_requirement' %}">Dodaj zapotrzebowanie</a>
+
 <h2>Moje preferowane godziny lekcji</h2>
 {% if availabilities %}
 <ul>

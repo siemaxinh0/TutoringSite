@@ -74,3 +74,12 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment #{self.pk} - {self.user} - {self.amount} ({self.status})"
+
+
+class StudentRequirement(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requirements')
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='requirements')
+    hours_per_week = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.student} - {self.subject} ({self.hours_per_week}h/tyg.)"
